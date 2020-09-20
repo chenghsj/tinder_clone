@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import TinderCard from "react-tinder-card";
+import React, { useState, useEffect, useRef } from "react";
 import { useSprings, animated, interpolate } from "react-spring";
 import { useDrag } from "react-use-gesture";
+import { useStateValue } from "../StateProvider";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "../axios";
 import "./styles/TinderCards.scss";
@@ -18,12 +18,11 @@ const trans = (r, s) =>
   `perspective(1500px) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`;
 
 function TinderCards() {
-  const colors = ["salmon", "orange", "green", "burlywood"];
-  const [people, setPeople] = useState([]);
+  const [{ people, swipeDir }, dispatch] = useStateValue();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({});
   const [gone] = useState(() => new Set());
-  const [props, set] = useSprings(colors.length, (i) => ({
+  const [props, set] = useSprings(5, (i) => ({
     ...to(i),
     from: from(i),
   }));
@@ -35,7 +34,9 @@ function TinderCards() {
         setLoading(true);
         setError({});
         const req = await axios.get("/tinder/cards");
-        if (!ignore) setPeople(req.data);
+        if (!ignore) {
+          dispatch({ type: "SET_PEOPLE", people: req.data });
+        }
       } catch (err) {
         setError(err);
       }
@@ -51,15 +52,8 @@ function TinderCards() {
 
   const bind = useDrag(
     //check https://codesandbox.io/embed/j0y0vpz59
-    ({
-      args: [index],
-      down,
-      delta: [xDelta],
-      distance,
-      direction: [xDir],
-      velocity,
-    }) => {
-      const trigger = velocity > 0.2; // If you flick hard enough it should trigger the card to fly out
+    ({ args: [index], down, delta: [xDelta], direction: [xDir], velocity }) => {
+      const trigger = velocity > 0.1; // If you flick hard enough it should trigger the card to fly out
       const dir = xDir < 0 ? -1 : 1; // Direction should either point left or right
       if (!down && trigger) gone.add(index); // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
       set((i) => {
@@ -113,6 +107,17 @@ function TinderCards() {
   ) : (
     <CircularProgress className="tinderCards__loading" />
   );
+
+  // return (
+  //   <div className="tinderCards__animatedOutside">
+  //     {people.map((person, i) => (
+  //       <div
+  //         style={{ backgroundImage: `url("${person.imgUrl}")` }}
+  //         className="tinderCards__card"
+  //       />
+  //     ))}
+  //   </div>
+  // );
 }
 
 export default TinderCards;

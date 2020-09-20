@@ -9,8 +9,9 @@
 }
 
 .tinderCards__card {
-  position: relative;
+  position: absolute;
   background-position: center;
+  cursor: pointer;
   will-change: transform;
   width: 80%;
   background-size: cover;
