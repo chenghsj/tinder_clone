@@ -1,0 +1,20 @@
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  width: 40vw;
+  min-width: 350px;
+  max-width: 450px;
+  position: relative;
+  border-radius: 20px;
+  box-shadow: 1px 1px 4px -2px, -1px 1px 2px -2px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  &:after {
+    content: "";
+    display: block;
+    padding-bottom: 150%;
+  }
+}
