@@ -1,5 +1,6 @@
 export const initialState = {
   people: [],
+  gone: new Set(),
   swipeDir: "",
 };
 

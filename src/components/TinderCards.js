@@ -14,14 +14,12 @@ const to = (i) => ({
   delay: i * 100,
 });
 const from = (i) => ({ scale: 1.5 });
-const trans = (r, s) =>
-  `perspective(1500px) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`;
+const trans = (r, s) => `rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`;
 
 function TinderCards() {
-  const [{ people, swipeDir }, dispatch] = useStateValue();
+  const [{ people, swipeDir, gone }, dispatch] = useStateValue();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({});
-  const [gone] = useState(() => new Set());
+  const [error, setError] = useState(null);
   const [props, set] = useSprings(5, (i) => ({
     ...to(i),
     from: from(i),
@@ -32,7 +30,7 @@ function TinderCards() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        setError({});
+        setError(null);
         const req = await axios.get("/tinder/cards");
         if (!ignore) {
           dispatch({ type: "SET_PEOPLE", people: req.data });

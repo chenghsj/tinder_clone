@@ -14,6 +14,7 @@
     "npm": "^6.14.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hammerjs": "^1.0.1",
     "react-scripts": "3.4.3",
     "react-spring": "^9.0.0-beta.3",
     "react-use-gesture": "^7.0.16",
